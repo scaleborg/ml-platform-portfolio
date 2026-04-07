@@ -1,0 +1,31 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "scaleborg",
+  "elements": [
+    {"type":"text","id":"title","x":530,"y":20,"width":500,"height":35,"text":"ML Platform — System Architecture","fontSize":28,"fontFamily":1,"strokeColor":"#e5e5e5"},
+    {"type":"rectangle","id":"p1","x":80,"y":130,"width":220,"height":70,"roundness":{"type":3},"strokeColor":"#4a9eed","strokeWidth":2,"backgroundColor":"#1e3a5f","fillStyle":"solid","roughness":1,"opacity":100,"boundElements":[{"id":"p1t","type":"text"}]},
+    {"type":"text","id":"p1t","x":100,"y":148,"width":180,"height":30,"text":"P1 Control Tower","fontSize":20,"fontFamily":1,"strokeColor":"#e5e5e5","textAlign":"center","verticalAlign":"middle","containerId":"p1"},
+    {"type":"arrow","id":"a1","x":305,"y":165,"width":50,"height":0,"points":[[0,0],[50,0]],"strokeColor":"#e5e5e5","strokeWidth":2,"roughness":1,"endArrowhead":"arrow"},
+    {"type":"rectangle","id":"p2","x":360,"y":130,"width":250,"height":70,"roundness":{"type":3},"strokeColor":"#22c55e","strokeWidth":2,"backgroundColor":"#1a4d2e","fillStyle":"solid","roughness":1,"opacity":100,"boundElements":[{"id":"p2t","type":"text"}]},
+    {"type":"text","id":"p2t","x":380,"y":148,"width":210,"height":30,"text":"P2 Feature Pipeline","fontSize":20,"fontFamily":1,"strokeColor":"#e5e5e5","textAlign":"center","verticalAlign":"middle","containerId":"p2"},
+    {"type":"arrow","id":"a2","x":615,"y":165,"width":50,"height":0,"points":[[0,0],[50,0]],"strokeColor":"#e5e5e5","strokeWidth":2,"roughness":1,"endArrowhead":"arrow"},
+    {"type":"rectangle","id":"p3","x":670,"y":130,"width":220,"height":70,"roundness":{"type":3},"strokeColor":"#8b5cf6","strokeWidth":2,"backgroundColor":"#2d1b69","fillStyle":"solid","roughness":1,"opacity":100,"boundElements":[{"id":"p3t","type":"text"}]},
+    {"type":"text","id":"p3t","x":690,"y":148,"width":180,"height":30,"text":"P3 Feature Store","fontSize":20,"fontFamily":1,"strokeColor":"#e5e5e5","textAlign":"center","verticalAlign":"middle","containerId":"p3"},
+    {"type":"arrow","id":"a3","x":895,"y":165,"width":50,"height":0,"points":[[0,0],[50,0]],"strokeColor":"#e5e5e5","strokeWidth":2,"roughness":1,"endArrowhead":"arrow"},
+    {"type":"rectangle","id":"p4","x":950,"y":130,"width":310,"height":70,"roundness":{"type":3},"strokeColor":"#f59e0b","strokeWidth":2,"backgroundColor":"#5c3d1a","fillStyle":"solid","roughness":1,"opacity":100,"boundElements":[{"id":"p4t","type":"text"}]},
+    {"type":"text","id":"p4t","x":970,"y":148,"width":270,"height":30,"text":"P4 Training Orchestrator","fontSize":20,"fontFamily":1,"strokeColor":"#e5e5e5","textAlign":"center","verticalAlign":"middle","containerId":"p4"},
+    {"type":"arrow","id":"a4","x":1265,"y":165,"width":50,"height":0,"points":[[0,0],[50,0]],"strokeColor":"#e5e5e5","strokeWidth":2,"roughness":1,"endArrowhead":"arrow"},
+    {"type":"rectangle","id":"p5","x":1320,"y":130,"width":180,"height":70,"roundness":{"type":3},"strokeColor":"#ef4444","strokeWidth":2,"backgroundColor":"#5c1a1a","fillStyle":"solid","roughness":1,"opacity":100,"boundElements":[{"id":"p5t","type":"text"}]},
+    {"type":"text","id":"p5t","x":1345,"y":148,"width":130,"height":30,"text":"P5 Serving","fontSize":20,"fontFamily":1,"strokeColor":"#e5e5e5","textAlign":"center","verticalAlign":"middle","containerId":"p5"},
+    {"type":"arrow","id":"a5","x":1410,"y":205,"width":0,"height":60,"points":[[0,0],[0,60]],"strokeColor":"#e5e5e5","strokeWidth":2,"roughness":1,"endArrowhead":"arrow"},
+    {"type":"rectangle","id":"p6","x":1320,"y":270,"width":180,"height":70,"roundness":{"type":3},"strokeColor":"#ec4899","strokeWidth":2,"backgroundColor":"#5c1a3a","fillStyle":"solid","roughness":1,"opacity":100,"boundElements":[{"id":"p6t","type":"text"}]},
+    {"type":"text","id":"p6t","x":1340,"y":288,"width":140,"height":30,"text":"P6 Monitoring","fontSize":20,"fontFamily":1,"strokeColor":"#e5e5e5","textAlign":"center","verticalAlign":"middle","containerId":"p6"},
+    {"type":"arrow","id":"a6","x":1320,"y":305,"width":-1115,"height":-105,"points":[[0,0],[-1115,0],[-1115,-105]],"strokeColor":"#e5e5e5","strokeWidth":2,"strokeStyle":"dashed","roughness":1,"endArrowhead":"arrow"},
+    {"type":"text","id":"fbl","x":650,"y":283,"width":140,"height":22,"text":"feedback loop","fontSize":16,"fontFamily":1,"strokeColor":"#a0a0a0"}
+  ],
+  "appState": {
+    "viewBackgroundColor": "#1e1e2e"
+  },
+  "files": {}
+}
