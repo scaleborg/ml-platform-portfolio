@@ -18,8 +18,8 @@ P6 closes the loop by making the system observable after deployment: dataset lin
 | P2 | `mobility-feature-pipeline` | Point-in-time feature engineering and supervised dataset generation |
 | P3 | `mobility-feature-store` | Feature storage, point-in-time retrieval, offline/online consistency |
 | P4 | `ml-training-orchestrator` | Reproducible training, evaluation, experiment tracking, model packaging |
-| P5 | `mobility-serving-layer` | Low-latency inference, feature loading, model serving API |
-| P6 | `monitoring-feedback-layer` | Lineage, metrics, freshness checks, validation, feedback and retraining signals |
+| P5 | `mobility-serving-layer` | Real-time inference, deterministic feature reconstruction, deployment and metrics observability |
+| P6 | `monitoring-feedback-layer` | Per-deployment health classification, lineage, freshness, gap and staleness detection |
 
 Each repository represents a system boundary with explicit contracts between layers.
 
@@ -40,10 +40,14 @@ Parquet datasets, offline/online retrieval paths, and point-in-time lookup seman
 Time-based splits, reproducible training runs, evaluation, experiment tracking, and model packaging.
 
 ### Serving (P5)
-Real-time feature loading and low-latency inference through an API surface.
+Real-time inference serving from upstream platform data. Features are reconstructed point-in-time from the same source used in training, with strict schema-driven parity enforcement. Emits structured deployment events and 60-second metrics windows as append-only artifacts for downstream monitoring.
 
 ### Monitoring and feedback (P6)
-Dataset-to-model lineage, runtime metrics, freshness checks, validation signals, and the operational surface required to support retraining decisions.
+Consumes real P5 serving artifacts and computes deterministic per-deployment health classification across three states (healthy, degraded, unhealthy). Health evaluation accounts for staleness, window gaps, missing windows, latency, and error rates. Maintains dataset-to-model lineage, freshness tracking, and validation signals that close the operational loop.
+
+## Completion status
+
+The P1 → P5 → P6 operational loop has been validated end-to-end on real artifacts. Serving metrics flow from P5 into P6, where per-deployment health is computed deterministically against configurable thresholds. Lineage traces datasets through training to serving. Dashboards, alerting infrastructure, and automated retraining triggers are intentionally deferred as separate concerns outside this platform slice.
 
 ## System properties
 
