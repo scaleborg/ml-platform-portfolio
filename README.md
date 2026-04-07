@@ -2,59 +2,60 @@
 
 Production-grade ML platform designed for real-time decisioning systems.
 
-This repository is the entry point to a multi-repo system that covers the full lifecycle of machine learning in production: from data ingestion to feature computation, model training, and low-latency serving.
+This repository is the entry point to a multi-repo system that covers the full lifecycle of machine learning in production: from real-time data ingestion to feature computation, feature serving, model training, low-latency inference, and operational monitoring.
 
----
-
-## System Overview
+## System overview
 
 The platform is structured as a set of interoperable layers:
 
-P1 → P2 → P3 → P4 → P5
+**P1 → P2 → P3 → P4 → P5 → P6**
+
+P6 closes the loop by making the system observable after deployment: dataset lineage, model lineage, freshness, runtime metrics, validation signals, and future retraining triggers.
 
 | Layer | Component | Responsibility |
-|------|----------|----------------|
-| P1 | urban-mobility-control-tower | Real-time data ingestion, CDC, streaming aggregation, analytical surface |
-| P2 | mobility-feature-pipeline | Point-in-time feature engineering and dataset generation |
-| P3 | mobility-feature-store | Feature storage, point-in-time retrieval, offline/online consistency |
-| P4 | ml-training-orchestrator | Reproducible training, evaluation, and model packaging |
-| P5 | mobility-serving-layer | Low-latency inference and API serving |
+|-------|-----------|----------------|
+| P1 | `urban-mobility-control-tower` | Real-time data ingestion, CDC, streaming aggregation, analytical surface |
+| P2 | `mobility-feature-pipeline` | Point-in-time feature engineering and supervised dataset generation |
+| P3 | `mobility-feature-store` | Feature storage, point-in-time retrieval, offline/online consistency |
+| P4 | `ml-training-orchestrator` | Reproducible training, evaluation, experiment tracking, model packaging |
+| P5 | `mobility-serving-layer` | Low-latency inference, feature loading, model serving API |
+| P6 | `monitoring-feedback-layer` | Lineage, metrics, freshness checks, validation, feedback and retraining signals |
 
 Each repository represents a system boundary with explicit contracts between layers.
 
----
-
 ## Architecture
 
-End-to-end flow:
+End-to-end system flow:
 
-1. **Ingestion (P1)**  
-   GBFS → Postgres → Debezium CDC → Kafka → Flink → DuckDB  
+### Ingestion (P1)
+GBFS → Postgres → Debezium CDC → Kafka → Flink → DuckDB
 
-2. **Feature computation (P2)**  
-   SQL-based feature engineering with strict temporal constraints  
+### Feature computation (P2)
+SQL-based feature engineering with strict temporal constraints and point-in-time correctness.
 
-3. **Feature storage (P3)**  
-   Parquet datasets + point-in-time retrieval (ASOF JOIN semantics)  
+### Feature storage (P3)
+Parquet datasets, offline/online retrieval paths, and point-in-time lookup semantics.
 
-4. **Model training (P4)**  
-   Time-based splits, experiment tracking, model packaging  
+### Model training (P4)
+Time-based splits, reproducible training runs, evaluation, experiment tracking, and model packaging.
 
-5. **Serving (P5)**  
-   Real-time feature loading + model inference via API  
+### Serving (P5)
+Real-time feature loading and low-latency inference through an API surface.
 
----
+### Monitoring and feedback (P6)
+Dataset-to-model lineage, runtime metrics, freshness checks, validation signals, and the operational surface required to support retraining decisions.
 
 ## System properties
 
-- Strict separation of concerns across layers  
-- Deterministic feature contracts between training and serving  
-- No feature recomputation outside the feature pipeline  
-- Point-in-time correctness across the entire system  
-- Reproducible training datasets  
-- Stateless, horizontally scalable serving layer  
-
----
+- Strict separation of concerns across layers
+- Explicit contracts between ingestion, features, training, serving, and monitoring
+- Deterministic feature definitions between training and serving
+- No feature recomputation outside the feature pipeline
+- Point-in-time correctness across the full system
+- Reproducible training datasets and model runs
+- Stateless, horizontally scalable serving layer
+- Operational observability tied to actual ML artifacts and contracts
+- Clear path toward closed-loop retraining
 
 ## Design approach
 
@@ -62,24 +63,35 @@ This platform is built as a system, not a collection of projects.
 
 Each layer is:
 
-- independently deployable  
-- contract-driven  
-- composable with the rest of the stack  
+- independently understandable
+- contract-driven
+- composable with the rest of the stack
+- scoped to a single operational responsibility
 
-The focus is not only model performance, but system reliability, reproducibility, and correctness under real-world constraints.
-
----
+The objective is not only model performance. The system is designed around reliability, reproducibility, temporal correctness, and production-grade interfaces between layers.
 
 ## Current implementation
 
-This system is currently demonstrated through an urban mobility use case (bike station availability prediction), but the architecture is designed to be reusable across domains.
+The current implementation is demonstrated through an urban mobility use case focused on bike station availability prediction.
 
----
+The architectural pattern is platform-level and reusable beyond mobility. The same layer model can be extended to other operational decisioning domains such as retail, logistics, fulfillment, and marketplace systems.
 
 ## Repository links
 
-- P1 — https://github.com/scaleborg/urban-mobility-control-tower  
-- P2 — https://github.com/scaleborg/mobility-feature-pipeline  
-- P3 — https://github.com/scaleborg/mobility-feature-store  
-- P4 — https://github.com/scaleborg/ml-training-orchestrator  
-- P5 — https://github.com/scaleborg/mobility-serving-layer  
+- **P1** — `urban-mobility-control-tower`  
+  https://github.com/scaleborg/urban-mobility-control-tower
+
+- **P2** — `mobility-feature-pipeline`  
+  https://github.com/scaleborg/mobility-feature-pipeline
+
+- **P3** — `mobility-feature-store`  
+  https://github.com/scaleborg/mobility-feature-store
+
+- **P4** — `ml-training-orchestrator`  
+  https://github.com/scaleborg/ml-training-orchestrator
+
+- **P5** — `mobility-serving-layer`  
+  https://github.com/scaleborg/mobility-serving-layer
+
+- **P6** — `monitoring-feedback-layer`  
+  https://github.com/scaleborg/monitoring-feedback-layer
