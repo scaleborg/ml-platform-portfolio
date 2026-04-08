@@ -6,20 +6,23 @@ This repository is the entry point to a multi-repo system that covers the full l
 
 ## System overview
 
+![Platform architecture](assets/diagrams/ml-platform-portfolio-overview.png)
+
 The platform is structured as a set of interoperable layers:
 
-**P1 → P2 → P3 → P4 → P5 → P6**
+**P1 → P2 → P3 → P4 → P5 → P6 → P7**
 
-P6 closes the loop by making the system observable after deployment: dataset lineage, model lineage, freshness, runtime metrics, validation signals, and future retraining triggers.
+P6 observes artifacts from P2, P4, and P5 to produce lineage, freshness, and health signals. P7 consumes P5 predictions and P6 health state to emit deterministic action decisions, closing the operational loop.
 
 | Layer | Component | Responsibility |
 |-------|-----------|----------------|
-| P1 | `urban-mobility-control-tower` | Real-time data ingestion, CDC, streaming aggregation, analytical surface |
-| P2 | `mobility-feature-pipeline` | Point-in-time feature engineering and supervised dataset generation |
-| P3 | `mobility-feature-store` | Feature storage, point-in-time retrieval, offline/online consistency |
-| P4 | `ml-training-orchestrator` | Reproducible training, evaluation, experiment tracking, model packaging |
-| P5 | `mobility-serving-layer` | Real-time inference, deterministic feature reconstruction, deployment and metrics observability |
-| P6 | `monitoring-feedback-layer` | Per-deployment health classification, lineage, freshness, gap and staleness detection |
+| P1 | `urban-mobility-control-tower` | Real-time data ingestion, CDC, streaming aggregation (`raw_station_metrics_1min`), analytical surface |
+| P2 | `mobility-feature-pipeline` | Point-in-time feature engineering, supervised dataset generation |
+| P3 | `mobility-feature-store` | Feature storage, point-in-time retrieval, offline/online serving consistency |
+| P4 | `ml-training-orchestrator` | Reproducible training, evaluation, experiment tracking, inference bundle packaging |
+| P5 | `mobility-serving-layer` | Real-time inference with point-in-time feature reconstruction from upstream raw metrics DB, schema-driven training/serving parity, serving observability artifacts, P7 decisioning integration |
+| P6 | `monitoring-feedback-layer` | Per-deployment health classification, dataset/model lineage, freshness and staleness detection (observes P2, P4, P5) |
+| P7 | `mobility-decision-engine` | Deterministic decision layer: consumes P5 predictions and P6 health signals, emits action decisions |
 
 Each repository represents a system boundary with explicit contracts between layers.
 
@@ -40,14 +43,17 @@ Parquet datasets, offline/online retrieval paths, and point-in-time lookup seman
 Time-based splits, reproducible training runs, evaluation, experiment tracking, and model packaging.
 
 ### Serving (P5)
-Real-time inference serving from upstream platform data. Features are reconstructed point-in-time from the same source used in training, with strict schema-driven parity enforcement. Emits structured deployment events and 60-second metrics windows as append-only artifacts for downstream monitoring.
+Real-time inference with point-in-time feature reconstruction from the upstream raw metrics DB (`raw_station_metrics_1min`). Training/serving parity is enforced via schema-driven contracts against the same feature definitions used in P2. Emits structured deployment events and 60-second metrics windows as append-only serving observability artifacts. Calls P7 for deterministic decisioning on each prediction cycle.
 
 ### Monitoring and feedback (P6)
-Consumes real P5 serving artifacts and computes deterministic per-deployment health classification across three states (healthy, degraded, unhealthy). Health evaluation accounts for staleness, window gaps, missing windows, latency, and error rates. Maintains dataset-to-model lineage, freshness tracking, and validation signals that close the operational loop.
+Observes metadata artifacts from P2 (dataset builds), P4 (training runs), and P5 (serving metrics). Computes deterministic per-deployment health classification across three states (healthy, degraded, unhealthy). Health evaluation accounts for staleness, window gaps, missing windows, latency, and error rates. Maintains dataset-to-model lineage, freshness tracking, and validation signals.
+
+### Decision engine (P7)
+Consumes P5 predictions and P6 health signals. Emits deterministic action decisions (e.g., rebalancing dispatch) gated on prediction confidence and deployment health state. Closes the operational loop by converting ML outputs into system actions.
 
 ## Completion status
 
-The P1 → P5 → P6 operational loop has been validated end-to-end on real artifacts. Serving metrics flow from P5 into P6, where per-deployment health is computed deterministically against configurable thresholds. Lineage traces datasets through training to serving. Dashboards, alerting infrastructure, and automated retraining triggers are intentionally deferred as separate concerns outside this platform slice.
+P1 through P7 are implemented and integrated across repos. Serving metrics flow from P5 into P6, where per-deployment health is computed deterministically against configurable thresholds. Lineage traces datasets through training to serving. P7 consumes P5 predictions and P6 health signals to emit deterministic action decisions, closing the operational loop. Dashboards, alerting infrastructure, and automated retraining triggers are intentionally deferred as separate concerns outside this platform slice.
 
 ## System properties
 
@@ -59,7 +65,13 @@ The P1 → P5 → P6 operational loop has been validated end-to-end on real arti
 - Reproducible training datasets and model runs
 - Stateless, horizontally scalable serving layer
 - Operational observability tied to actual ML artifacts and contracts
-- Clear path toward closed-loop retraining
+- Clear path toward closed-loop retraining and deterministic action decisions
+
+## How to explore
+
+Start with this README to understand the overall system architecture and the role of each layer. Then inspect individual repos in any order — each is independently understandable with its own README, contracts, and test suite. Cloning all repos is not required; the portfolio README and individual repo READMEs are designed to be read on GitHub.
+
+For the data flow, follow the layer order: P1 (ingestion) → P2 (features) → P3 (store) → P4 (training) → P5 (serving) → P6 (monitoring) → P7 (decisions).
 
 ## Design approach
 
@@ -99,3 +111,6 @@ The architectural pattern is platform-level and reusable beyond mobility. The sa
 
 - **P6** — `monitoring-feedback-layer`  
   https://github.com/scaleborg/monitoring-feedback-layer
+
+- **P7** — `mobility-decision-engine`  
+  https://github.com/scaleborg/mobility-decision-engine
